@@ -11,6 +11,14 @@ namespace MohawkGame2D
     public class Game
     {
         // Place your variables here:
+        Eyeball[] eyeballs = [
+                new Eyeball(),
+                new Eyeball(),
+                new Eyeball(),
+                new Eyeball(new Vector2(200, 200), 50, 30, 18, Color.Green),
+                new Eyeball(new Vector2(100, 100), 35, 25, 10, Color.Blue),
+            ];
+        int numberOfClicks = 0;
 
 
         /// <summary>
@@ -18,7 +26,8 @@ namespace MohawkGame2D
         /// </summary>
         public void Setup()
         {
-
+            Window.SetTitle("Eyeballs with Classes");
+            Window.SetSize(400, 400);
         }
 
         /// <summary>
@@ -26,7 +35,23 @@ namespace MohawkGame2D
         /// </summary>
         public void Update()
         {
+            Window.ClearBackground(Color.OffWhite);
+            Text.Draw($"Clicks: {numberOfClicks}", 10, 10);
 
+            for (int i = 0; i < eyeballs.Length; i++)
+            {
+                eyeballs[i].Render();
+                if (eyeballs[i].HasClickedOnEye())
+                {
+                    numberOfClicks += 1;
+                }
+            }
+
+            if (numberOfClicks >= eyeballs.Length)
+            {
+                Window.ClearBackground(Color.Red);
+                Text.Draw("Winner", 100, 200);
+            }
         }
     }
 
