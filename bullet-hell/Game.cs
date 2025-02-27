@@ -12,7 +12,10 @@ namespace MohawkGame2D
     {
         // Place your variables here:
         Player player;
-        Bullet bullet;
+        Bullet[] bullets;
+        int activeBullets = 0;
+        int countBulletHitEdges;
+        bool isGameOver;
 
         /// <summary>
         ///     Setup runs once before the game loop begins.
@@ -25,8 +28,10 @@ namespace MohawkGame2D
             player = new Player();
             player.position = new Vector2(Window.Width / 2, 100);
 
+            bullets = new Bullet[10];
             Vector2 bulletPosition = new Vector2(Window.Width / 2, Window.Height - 100);
-            bullet = new Bullet(bulletPosition, 5, Color.Black);
+            bullets[0] = new Bullet(bulletPosition, 5, Color.Black);
+            activeBullets = 1;
         }
 
         /// <summary>
@@ -34,13 +39,58 @@ namespace MohawkGame2D
         /// </summary>
         public void Update()
         {
+            if (isGameOver)
+            {
+                GameOver();
+            }
+            else
+            {
+                PlayGame();
+            }
+        }
+
+        public void PlayGame()
+        {
             Window.ClearBackground(Color.OffWhite);
 
-            bullet.Update();
+            player.Update();
 
-            bullet.Render();
+            for (int i = 0; i < activeBullets; i++)
+            {
+                Bullet bullet = bullets[i];
+                bullet.Update();
+                bullet.Render();
+                if (bullet.HasHitScreenEdge())
+                {
+                    countBulletHitEdges += 1;
+                    // TODO: split if hit enough times
+                    bool canCreateClone = activeBullets < bullets.Length;
+                    bool hasHitEnoughTimes = countBulletHitEdges >= activeBullets * 2;
+                    if (canCreateClone && hasHitEnoughTimes)
+                    {
+                        // 
+                        bullets[activeBullets] = bullet.CreateClone();
+                        activeBullets++;
+
+                        // Reset count
+                        countBulletHitEdges = 0;
+                    }
+                }
+
+                // does bullet hit player
+                float distance = Vector2.Distance(player.position, bullet.GetPosition());
+                if (distance < player.size)
+                {
+                    isGameOver = true;
+                }
+            }
+
             player.Render();
-            
+        }
+
+        public void GameOver()
+        {
+            Window.ClearBackground(Color.Red);
         }
     }
 
