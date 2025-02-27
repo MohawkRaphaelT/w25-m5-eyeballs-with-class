@@ -43,6 +43,7 @@ namespace MohawkGame2D
 
             if (isClickedOn)
             {
+                // Line for closed eye
                 Draw.Line(position.X - corneaRadius, position.Y, position.X + corneaRadius, position.Y);
             }
             else
@@ -58,20 +59,20 @@ namespace MohawkGame2D
 
         public bool HasClickedOnEye()
         {
+            // Short circuit function. Return false if this
+            // has already been clicked on
             if (isClickedOn)
             {
                 return false;
             }
 
+            // See if mouse is clicking on eye this frame
             float distanceMouseToEye = Vector2.Distance(position, Input.GetMousePosition());
-            bool isOnEye = distanceMouseToEye < corneaRadius;
-            if (isOnEye)
+            bool isMouseOnEye = distanceMouseToEye < corneaRadius;
+            if (isMouseOnEye && Input.IsMouseButtonPressed(MouseInput.Left))
             {
-                if (Input.IsMouseButtonPressed(MouseInput.Left))
-                {
-                    isClickedOn = true;
-                    return true;
-                }
+                isClickedOn = true;
+                return true;
             }
 
             return false;

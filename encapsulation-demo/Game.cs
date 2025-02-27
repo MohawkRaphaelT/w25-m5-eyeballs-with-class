@@ -36,7 +36,6 @@ namespace MohawkGame2D
         public void Update()
         {
             Window.ClearBackground(Color.OffWhite);
-            Text.Draw($"Clicks: {numberOfClicks}", 10, 10);
 
             for (int i = 0; i < eyeballs.Length; i++)
             {
@@ -46,6 +45,9 @@ namespace MohawkGame2D
                     numberOfClicks += 1;
                 }
             }
+
+            Text.Draw($"Clicks: {numberOfClicks}", 10, 10);
+
 
             if (numberOfClicks >= eyeballs.Length)
             {
