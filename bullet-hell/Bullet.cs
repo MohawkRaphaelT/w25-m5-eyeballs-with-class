@@ -38,17 +38,36 @@ namespace MohawkGame2D
             position += velocity * Time.DeltaTime;
 
             // Constrain to left and right sides of the window
-            if (position.X <= 0 || position.X >= Window.Width)
+            bool isCollideLeft = position.X <= 0;
+            bool isCollideRight = position.X >= Window.Width;
+            bool isCollideTop = position.Y <= 0;
+            bool isCollideBottom = position.Y >= Window.Height;
+            hasHitScreenEdge = isCollideLeft || isCollideRight || isCollideTop || isCollideBottom;
+            if (hasHitScreenEdge)
             {
-                velocity.X = -velocity.X;
-                hasHitScreenEdge = true;
-            }
+                // Horizontal negation
+                if (isCollideLeft || isCollideRight)
+                    velocity.X = -velocity.X;
 
-            // Constrain to top and bottom sides of the window
-            if (position.Y <= 0 || position.Y >= Window.Height)
-            {
-                velocity.Y = -velocity.Y;
-                hasHitScreenEdge = true;
+                // Vertical negation
+                if (isCollideTop || isCollideBottom)
+                    velocity.Y = -velocity.Y;
+
+                // Constrain to left
+                if (isCollideLeft)
+                    position.X = 0;
+
+                // constrain to right
+                if (isCollideRight)
+                    position.X = Window.Width;
+
+                // constrain to top
+                if (isCollideTop)
+                    position.Y = 0;
+
+                // constrain to bottom
+                if (isCollideBottom)
+                    position.Y = Window.Height;
             }
         }
 

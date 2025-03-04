@@ -24,14 +24,7 @@ namespace MohawkGame2D
         {
             Window.SetTitle("Bullet Hell");
             Window.SetSize(400, 400);
-
-            player = new Player();
-            player.position = new Vector2(Window.Width / 2, 100);
-
-            bullets = new Bullet[10];
-            Vector2 bulletPosition = new Vector2(Window.Width / 2, Window.Height - 100);
-            bullets[0] = new Bullet(bulletPosition, 5, Color.Black);
-            activeBullets = 1;
+            ResetGameState();
         }
 
         /// <summary>
@@ -65,7 +58,7 @@ namespace MohawkGame2D
                     countBulletHitEdges += 1;
                     // TODO: split if hit enough times
                     bool canCreateClone = activeBullets < bullets.Length;
-                    bool hasHitEnoughTimes = countBulletHitEdges >= activeBullets * 2;
+                    bool hasHitEnoughTimes = countBulletHitEdges >= activeBullets;
                     if (canCreateClone && hasHitEnoughTimes)
                     {
                         // 
@@ -91,6 +84,26 @@ namespace MohawkGame2D
         public void GameOver()
         {
             Window.ClearBackground(Color.Red);
+
+            // If press button, reset game state
+            if (Input.IsKeyboardKeyPressed(KeyboardInput.Space))
+            {
+                ResetGameState();
+            }
+        }
+
+        public void ResetGameState()
+        {
+            player = new Player();
+            player.position = new Vector2(Window.Width / 2, 100);
+
+            bullets = new Bullet[10];
+            Vector2 bulletPosition = new Vector2(Window.Width / 2, Window.Height - 100);
+            bullets[0] = new Bullet(bulletPosition, 5, Color.Black);
+            activeBullets = 1;
+            countBulletHitEdges = 0;
+
+            isGameOver = false;
         }
     }
 
