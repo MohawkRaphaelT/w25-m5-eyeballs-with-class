@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Numerics;
-using System.Runtime.Intrinsics.X86;
 
 namespace MohawkGame2D
 {
     public class Bullet
     {
         Vector2 position;
-        Vector2 velocity;
+        Vector2 direction;
+        float speed = 200;
         float radius;
         Color color;
         bool hasHitScreenEdge;
-        float speed = 150;
 
 
         public Bullet(Vector2 pos, float r, Color c)
@@ -21,7 +20,7 @@ namespace MohawkGame2D
             color = c;
 
             // Give bullet a random direction and fixed speed
-            velocity = Random.Direction() * speed;
+            direction = Random.Direction();
         }
 
         public void Render()
@@ -34,8 +33,11 @@ namespace MohawkGame2D
 
         public void Update()
         {
+            // add to speed
+            speed += Time.DeltaTime * 3;
+
             // Add velocity to position, scaled by time
-            position += velocity * Time.DeltaTime;
+            position += direction * speed * Time.DeltaTime;
 
             // Constrain to left and right sides of the window
             bool isCollideLeft = position.X <= 0;
@@ -47,11 +49,11 @@ namespace MohawkGame2D
             {
                 // Horizontal negation
                 if (isCollideLeft || isCollideRight)
-                    velocity.X = -velocity.X;
+                    direction.X = -direction.X;
 
                 // Vertical negation
                 if (isCollideTop || isCollideBottom)
-                    velocity.Y = -velocity.Y;
+                    direction.Y = -direction.Y;
 
                 // Constrain to left
                 if (isCollideLeft)
@@ -82,14 +84,12 @@ namespace MohawkGame2D
         {
             Bullet clone = new Bullet(position, radius, color);
 
-            // Strip speed from velocity, only have direction
-            Vector2 direction = Vector2.Normalize(velocity);
             // Add random deviation
             Vector2 deviation1 = Random.Direction() / 3;
             Vector2 deviation2 = Random.Direction() / 3;
             // Reconstruct direction and reapply speed
-            this.velocity = Vector2.Normalize(direction + deviation1) * speed;
-            clone.velocity = Vector2.Normalize(direction + deviation2) * speed;
+            this.direction = Vector2.Normalize(direction + deviation1);
+            clone.direction = Vector2.Normalize(direction + deviation2);
 
             return clone;
         }
