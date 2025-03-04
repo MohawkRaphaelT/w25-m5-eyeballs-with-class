@@ -46,33 +46,30 @@ namespace MohawkGame2D
 
         private void Move()
         {
+            // Create input vector. Values will be assigned later.
             Vector2 movement = Vector2.Zero;
+            // Get keyboard input. Create X and Y axis from negative and positive keys.
+            float keyboardX = Input.GetAxis(KeyboardInput.A, KeyboardInput.D);
+            float keyboardY = Input.GetAxis(KeyboardInput.S, KeyboardInput.W);
+            // Get controller input from controller 1 (index 0) specifically.
+            float controllerX = Input.GetControllerAxis(0, ControllerAxis.RightX);
+            float controllerY = Input.GetControllerAxis(0, ControllerAxis.RightY);
 
-            if (Input.IsKeyboardKeyDown(KeyboardInput.W) ||
-                Input.IsAnyControllerButtonDown(ControllerButton.LeftFaceUp))
-            {
-                movement.Y -= 1;
-            }
+            // Set movement to controller input.
+            movement.X = controllerX;
+            movement.Y = controllerY;
 
-            if (Input.IsKeyboardKeyDown(KeyboardInput.A) ||
-                Input.IsAnyControllerButtonDown(ControllerButton.LeftFaceLeft))
+            // Override controller input if keyboard kets pressed.
+            if (keyboardX != 0)
+                movement.X = keyboardX;
+            if (keyboardY != 0)
+                movement.Y = keyboardY;
 
-            {
-                movement.X -= 1;
-            }
+            // Normalize vector is magnitude is greater than 1, e.g. diagonals of 1.4f
+            if (movement.Length() > 1)
+                movement = Vector2.Normalize(movement);
 
-            if (Input.IsKeyboardKeyDown(KeyboardInput.S) ||
-                Input.IsAnyControllerButtonDown(ControllerButton.LeftFaceDown))
-            {
-                movement.Y += 1;
-            }
-
-            if (Input.IsKeyboardKeyDown(KeyboardInput.D) ||
-                Input.IsAnyControllerButtonDown(ControllerButton.LeftFaceRight))
-            {
-                movement.X += 1;
-            }
-
+            // Apply movement
             movement *= speed * Time.DeltaTime;
             position += movement;
         }

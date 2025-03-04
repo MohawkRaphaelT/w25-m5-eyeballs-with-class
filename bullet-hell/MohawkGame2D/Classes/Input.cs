@@ -57,7 +57,10 @@ namespace MohawkGame2D
                 }
             }
 
-            finalValue /= controllerCount;
+            // Prevent divide by zero, NaN output
+            if (controllerCount > 0)
+                finalValue /= controllerCount;
+
             return finalValue;
         }
 
